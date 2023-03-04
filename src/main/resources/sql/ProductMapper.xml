@@ -181,4 +181,12 @@
 			  </where> ) countTable						
 	 </select>
 	
+	<select  id="getProductNameList"  resultType="String">
+	  
+		SELECT prod_name 
+		FROM product  
+		ORDER BY prod_name
+
+	 </select>
+	
 </mapper>

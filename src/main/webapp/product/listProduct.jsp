@@ -11,6 +11,7 @@
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 
+
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="https://code.jquery.com/jquery-3.6.3.min.js" type="text/javascript"></script>
@@ -48,10 +49,10 @@
 		
 		
 		
-		
+		$( '.ct_list_pop td:nth-child(3)' ).each(function(index, item){
 		$.ajax( 
 					{
-						url : "/json/product/getProduct/"+$( '.ct_list_pop td:nth-child(3)' ).eq(0).children('input:hidden').val() ,
+						url : "/json/product/getProduct/"+$(item).children('input:hidden').val() ,
 						method : "GET" ,
 						dataType : "json" ,
 						headers : {
@@ -61,24 +62,52 @@
 						success : function(JSONData , status) {
 							
 							//Debug...
-							//alert(status);
+							
 							//Debug...
 							//alert("JSONData : \n"+JSONData);
 							//alert("JSONData : \n"+JSON.stringify(JSONData));
 							var detail=	JSONData.prodDetail;
 							
-							
 							//Debug...									
 							//alert(displayValue);
-							$( '.ct_list_pop td:nth-child(3)' ).eq(0).attr('title',detail);
+							$(item).attr('title',detail);
 						}
 					}
 			);// end of ajax
-			
-			$( '.ct_list_pop td:nth-child(3)' ).tooltip();
+		});// end of each
+		
+		$( '.ct_list_pop td:nth-child(3)' ).tooltip();
 		
 	
-			
+		 $('ct_input_g').on('click', function() {
+			    var availableTags = [
+			      "ActionScript",
+			      "AppleScript",
+			      "Asp",
+			      "BASIC",
+			      "C",
+			      "C++",
+			      "Clojure",
+			      "COBOL",
+			      "ColdFusion",
+			      "Erlang",
+			      "Fortran",
+			      "Groovy",
+			      "Haskell",
+			      "Java",
+			      "JavaScript",
+			      "Lisp",
+			      "Perl",
+			      "PHP",
+			      "Python",
+			      "Ruby",
+			      "Scala",
+			      "Scheme"
+			    ];
+			    $( "#tags" ).autocomplete({
+			      source: availableTags
+			    });
+			  } );
 			
 		
 			
