@@ -20,9 +20,9 @@
 
 	function fncGetProductList(currentPage, searchOrderType, menu) {
 		$("#currentPage").val(currentPage);
-		$("menu").val(menu);
-		$("searchOrderType").val(searchOrderType);
-	   	document.detailForm.submit();		
+		$("#menu").val(menu);
+		$("#searchOrderType").val(searchOrderType);
+	   	$("form").attr('action','listProduct').attr('method','post').submit();		
 	}
 	
 	
@@ -60,16 +60,10 @@
 							"Content-Type" : "application/json"
 						},
 						success : function(JSONData , status) {
-							
-							//Debug...
-							
-							//Debug...
-							//alert("JSONData : \n"+JSONData);
-							//alert("JSONData : \n"+JSON.stringify(JSONData));
+						
 							var detail=	JSONData.prodDetail;
 							
-							//Debug...									
-							//alert(displayValue);
+							
 							$(item).attr('title',detail);
 						}
 					}
@@ -78,39 +72,42 @@
 		
 		$( '.ct_list_pop td:nth-child(3)' ).tooltip();
 		
-	
-		 $('ct_input_g').on('click', function() {
-			    var availableTags = [
-			      "ActionScript",
-			      "AppleScript",
-			      "Asp",
-			      "BASIC",
-			      "C",
-			      "C++",
-			      "Clojure",
-			      "COBOL",
-			      "ColdFusion",
-			      "Erlang",
-			      "Fortran",
-			      "Groovy",
-			      "Haskell",
-			      "Java",
-			      "JavaScript",
-			      "Lisp",
-			      "Perl",
-			      "PHP",
-			      "Python",
-			      "Ruby",
-			      "Scala",
-			      "Scheme"
-			    ];
-			    $( "#tags" ).autocomplete({
-			      source: availableTags
-			    });
-			  } );
-			
+		var availableTags = null
 		
-			
+		$.ajax(
+				{
+					url : "/json/product/getProductNameList",
+					method : "get",
+					dataType : "json",
+					headers : {
+						"Accept" : "application/json" ,
+						"Content-Type" : "application/json"
+					},
+					success : function (JSONData, status) {
+						availableTags = JSONData;
+						$( "#searchKeyword" ).autocomplete({
+							   source: availableTags
+						});
+					}
+				}
+		);
+		
+		$('.searchMinPrice').hide();
+		$('.searchMaxPrice').hide();
+		$('#searchCondition').on('change',function(){
+			if($('#searchCondition').val()!='2') {
+				$('.searchMinPrice').hide();
+				$('.searchMaxPrice').hide();
+				$('#searchKeyword').show();
+			} else {
+				$('.searchMinPrice').show();
+				$('.searchMaxPrice').show();
+				$('#searchKeyword').hide();
+			}
+		});
+		
+		
+		
 	});
 	
 </script>
@@ -122,7 +119,7 @@
 
 <div style="width:98%; margin-left:10px;">
 
-<form name="detailForm" action="listProduct" method="post">
+<form name="detailForm">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -156,26 +153,23 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
 		
-		<td align="right">
-			<select name="searchCondition" class="ct_input_g" style="width:80px" onChange = "javaScript:fncGetProductList('${resultPage.currentPage }','${param.menu }')">
+		<td align="right">																												
+			
+			<select name="searchCondition" id='searchCondition' class="ct_input_g" style="width:80px">
 					<c:if test = "${user.role eq 'admin'}">
 						<option value="0" ${ search.searchCondition == 0 ?" selected":""}>상품번호</option>
 					</c:if>
 					<option value="1" ${ search.searchCondition == 1 ?" selected":""}>상품명</option>
 					<option value="2" ${ search.searchCondition == 2 ?" selected":""}>상품가격	</option>
 			</select>
-			<c:choose>
-				<c:when test="${search.searchCondition == 2}">
-					&nbsp;
-					최소가<input type="text" name="searchMinPrice" value="${search.searchMinPrice }" class="ct_input_g" style="width:100px; height:19px" />
-					&nbsp;
-					최대가<input type="text" name="searchMaxPrice" value="${search.searchMaxPrice }" class="ct_input_g" style="width:100px; height:19px" />
-				</c:when>
+					
+					<label class = 'searchMinPrice'>&nbsp;최소가</label>
+					<input type="text" class = 'searchMinPrice' name="searchMinPrice" value="${search.searchMinPrice }" class="ct_input_g" style="width:100px; height:19px" />
+					
+					<label class = 'searchMaxPrice'>&nbsp;최대가</label>
+					<input type="text" class = 'searchMaxPrice' name="searchMaxPrice" value="${search.searchMaxPrice }" class="ct_input_g" style="width:100px; height:19px" />
 				
-				<c:otherwise>
-					<input type="text" name="searchKeyword" value="${search.searchKeyword }" class="ct_input_g" style="width:200px; height:19px" />
-				</c:otherwise>
-			</c:choose>
+					<input type="text" id = "searchKeyword" name="searchKeyword" value="${search.searchKeyword }" class="ct_input_g" style="width:200px; height:19px" />
 		</td>
 			
 			

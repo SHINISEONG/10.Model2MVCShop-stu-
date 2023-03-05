@@ -39,8 +39,8 @@ public class UserController {
 	@Value("#{commonProperties['pageUnit']}")
 	int pageUnit;
 	
-	@Value("#{commonProperties['pageSize']}")
-	int pageSize;
+	//@Value("#{commonProperties['pageSize']}")
+	int pageSize=28;
 	
 	
 	//@RequestMapping("/addUserView.do")

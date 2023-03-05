@@ -1,5 +1,7 @@
 package com.model2.mvc.web.product;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,10 +25,14 @@ public class ProductRestController {
 		System.out.println(this.getClass());
 	}
 	
-	@RequestMapping("/getProduct/{prodNo}")
+	@RequestMapping("getProduct/{prodNo}")
 	public Product getProduct(@PathVariable int prodNo) throws Exception {
 		return productService.getProduct(prodNo);
 	} 
 	
+	@RequestMapping("getProductNameList")
+	public List<String> getProductNameList() throws Exception {
+		return productService.getProductNameList();
+	}
 
 }

@@ -57,4 +57,9 @@ public class ProductDaoImpl implements ProductDao {
 		return sqlSession.selectOne("ProductMapper.getTotalCount", search);
 	}
 
+	@Override
+	public List<String> getProductNameList() throws Exception {
+		return sqlSession.selectList("ProductMapper.getProductNameList");
+	}
+
 }

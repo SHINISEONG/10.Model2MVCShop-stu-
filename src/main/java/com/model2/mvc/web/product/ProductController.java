@@ -78,7 +78,8 @@ public class ProductController {
 	public String listProduct(@ModelAttribute("search") Search search , Model model,
 							  @RequestParam(value="searchMinPrice", defaultValue = "0") int searchMinPrice, 
 							  @RequestParam(value="searchMaxPrice", defaultValue = "0") int searchMaxPrice,
-							  @RequestParam(value="searchOrderType", defaultValue = "orderByDateDESC") String searchOrderType
+							  @RequestParam(value="searchOrderType", defaultValue = "orderByDateDESC") String searchOrderType,
+							  @RequestParam("menu") String menu 
 							  ) throws Exception {
 		
 		if (searchMaxPrice < searchMinPrice) {
@@ -105,7 +106,7 @@ public class ProductController {
 		model.addAttribute("resultPage", resultPage);
 		model.addAttribute("search", search);
 		
-		return "forward:/product/listProduct.jsp";
+		return "forward:/product/listProduct.jsp?menu="+menu;
 	}
 	
 	
