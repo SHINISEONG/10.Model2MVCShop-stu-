@@ -60,7 +60,7 @@ $(function () {
 	$('.ct_btn01:contains("구매")').on('click',function(){
 		$('form').attr('action','../purchase/addPurchase?prodNo=${product.prodNo }').attr('method','get').submit();
 	});
-	
+	 
 	$('.ct_btn01:contains("확인")').on('click',function(){
 		$('form').attr('action','listProduct?menu=manage').attr('method','post').submit();
 	});

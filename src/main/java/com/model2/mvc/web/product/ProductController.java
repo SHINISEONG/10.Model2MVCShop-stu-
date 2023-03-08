@@ -79,6 +79,7 @@ public class ProductController {
 							  @RequestParam(value="searchMinPrice", defaultValue = "0") int searchMinPrice, 
 							  @RequestParam(value="searchMaxPrice", defaultValue = "0") int searchMaxPrice,
 							  @RequestParam(value="searchOrderType", defaultValue = "orderByDateDESC") String searchOrderType,
+							  @RequestParam(value="searchCondition", defaultValue = "0") String searchCondition,
 							  @RequestParam("menu") String menu 
 							  ) throws Exception {
 		
@@ -93,11 +94,13 @@ public class ProductController {
 		search.setSearchOrderType(searchOrderType);
 		search.setSearchMinPrice(searchMinPrice);
 		search.setSearchMaxPrice(searchMaxPrice);
+		search.setSearchCondition(searchCondition);
 		
 		if(search.getCurrentPage()==0) {
 			search.setCurrentPage(1);
 		}
 		search.setPageSize(pageSize);
+		
 		
 		Map<String,Object> map = productService.getProductList(search);
 		Page resultPage = new Page(search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);

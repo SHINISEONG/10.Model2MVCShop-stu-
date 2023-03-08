@@ -27,8 +27,6 @@
 		});
 		
 		$( "td:contains('배송하기')" ).on("click" , function() {
-			alert($( "td:contains('배송하기')" ).html());
-			alert($(this).children('input:hidden').val());
 			self.location ="updateTranCode?tranNo="+$(this).children('input:hidden').val()+"&tranCode=2&page=${resultPage.currentPage}";
 		});
 		

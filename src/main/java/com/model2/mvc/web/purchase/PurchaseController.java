@@ -23,7 +23,6 @@ import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.product.ProductService;
 import com.model2.mvc.service.purchase.PurchaseService;
-import com.model2.mvc.service.user.UserService;
 
 @Controller
 @RequestMapping("/purchase/*")
@@ -88,7 +87,7 @@ public class PurchaseController {
 	public ModelAndView addPurchase(@RequestParam("tranNo") int tranNo) throws Exception {
 		
 		Purchase purchase = purchaseService.getPurchase(tranNo);
-		
+		purchase.getPurchaseProd().setFileNames();
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("purchase", purchase);
 		modelAndView.setViewName("forward:/purchase/getPurchase.jsp");

@@ -16,16 +16,13 @@
 	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 	<script type="text/javascript">
 	
-		//=====기존Code 주석 처리 후  jQuery 변경 ======//
 		// 검색 / page 두가지 경우 모두 Form 전송을 위해 JavaScrpt 이용  
 		function fncGetUserList(currentPage) {
-			//document.getElementById("currentPage").value = currentPage;
 			$("#currentPage").val(currentPage)
-		   	//document.detailForm.submit();
 			$("form").attr("method" , "POST").attr("action" , "/user/listUser").submit();
 		}
-		//===========================================//
-		//==> 추가된부분 : "검색" ,  userId link  Event 연결 및 처리
+
+		//==>"검색" ,  userId link  Event 연결 및 처리
 		 $(function() {
 			 
 			//==> 검색 Event 연결처리부분
@@ -44,36 +41,124 @@
 			$( ".ct_list_pop td:nth-child(3)" ).on("click" , function() {
 					//Debug..
 					//alert(  $( this ).text().trim() );
-					self.location ="/user/getUser?userId="+$(this).text().trim();
+					
+					//////////////////////////// 추가 , 변경된 부분 ///////////////////////////////////
+					//self.location ="/user/getUser?userId="+$(this).text().trim();
+					////////////////////////////////////////////////////////////////////////////////////////////
+					var userId = $(this).text().trim();
+					$.ajax( 
+							{
+								url : "../json/user/getUser/"+userId ,
+								method : "GET" ,
+								dataType : "json" ,
+								headers : {
+									"Accept" : "application/json",
+									"Content-Type" : "application/json"
+								},
+								success : function(JSONData , status) {
+
+									//Debug...
+									//alert(status);
+									//Debug...
+									//alert("JSONData : \n"+JSON.stringify(JSONData));
+									
+									var displayValue = "<h3>"
+																+"아이디 : "+JSONData.userId+"<br/>"
+																+"이  름 : "+JSONData.userName+"<br/>"
+																+"이메일 : "+JSONData.email+"<br/>"
+																+"ROLE : "+JSONData.role+"<br/>"
+																+"등록일 : "+JSONData.regDateString+"<br/>"
+																+"<br/><span>회원정보 수정"
+																+"<input type='hidden' name='userId' value='"+JSONData.userId+"'/>"
+																+"</span>"
+																+"</h3>";
+									//Debug...									
+									//alert(displayValue);
+									$("h3").remove();
+									$( "#"+userId+"" ).html(displayValue);
+									
+									$("h3 span").on('click', function(){
+										$("form").attr("method" , "get").attr("action" , "updateUser").submit();
+									});
+								}
+						});
+						////////////////////////////////////////////////////////////////////////////////////////////
+					
 			});
 			
-			//==> UI 수정 추가부분  :  userId LINK Event End User 에게 보일수 있도록 
+		
+			var isEnd = false;
+			
+			var currentPage = 2;
+			var search = {"currentPage" : currentPage};
+			$(window).scroll(function() {
+				
+				 var $window = $(this);
+		            var scrollTop = $window.scrollTop();
+		            var windowHeight = $window.height();
+		            var documentHeight = $(document).height();
+		            
+		            console.log("documentHeight:" + documentHeight + " | scrollTop:" + scrollTop + " | windowHeight: " + windowHeight );
+		            
+		            // scrollbar의 thumb가 바닥 전 30px까지 도달 하면 리스트를 가져온다.
+		            if( scrollTop + windowHeight +10 > documentHeight ){
+			    	
+			    	/* 	
+			    	if(isEnd == true){
+				            return;
+				        }
+				     */	
+			    	 	
+				        $.ajax({
+				            url:"../json/user/listUser?currentPage="+currentPage ,
+				            method : "GET",
+							
+				            dataType: "json",
+				            success: function(JSONData){
+				            	currentPage ++;
+				            	/*
+				                var length = JSONData.data.length;
+				                if( length < 5 ){
+				                    isEnd = true;
+				                }
+				                */
+				                
+				                $.each(JSONData, function(index, user){
+				                	console.log(JSON.stringify(user));
+				                	
+				                    $('#list').append("<tr class='ct_list_pop'>	<td align='center'>"+(index+19)+"</td> <td></td> <td align='left'>"+user.userId
+				                    		+"</td><td></td><td align='left'>"+user.userName
+				                    		+"</td><td></td><td align='left'>"+user.email
+				                			+"</td></tr><tr><td colspan='11' bgcolor='D6D7D6' height='1'></td></tr>");
+				                    
+				                    $( ".ct_list_pop td:nth-child(3)" ).css("color" , "red");
+				        			$("h7").css("color" , "red");
+				                	$(".ct_list_pop:nth-child(4n+6)" ).css("background-color" , "whitesmoke");
+				                });
+				            }
+				        });
+			      
+			    }
+			});
+			 
+			//==> userId LINK Event End User 에게 보일수 있도록 
 			$( ".ct_list_pop td:nth-child(3)" ).css("color" , "red");
 			$("h7").css("color" , "red");
 			
-			
 			//==> 아래와 같이 정의한 이유는 ??
-			//==> 아래의 주석을 하나씩 풀어 가며 이해하세요.					
 			$(".ct_list_pop:nth-child(4n+6)" ).css("background-color" , "whitesmoke");
-			//console.log ( $( ".ct_list_pop:nth-child(1)" ).html() );
-			//console.log ( $( ".ct_list_pop:nth-child(2)" ).html() );
-			//console.log ( $( ".ct_list_pop:nth-child(3)" ).html() );
-			//console.log ( $( ".ct_list_pop:nth-child(4)" ).html() ); //==> ok
-			//console.log ( $( ".ct_list_pop:nth-child(5)" ).html() ); 
-			//console.log ( $( ".ct_list_pop:nth-child(6)" ).html() ); //==> ok
-			//console.log ( $( ".ct_list_pop:nth-child(7)" ).html() ); 
-		});	
+			
+			 
+		});	// end of $()
+		
 	</script>		
 	
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
-<c:set var = "pageType" value="user" scope="request"/>
+
 <div style="width:98%; margin-left:10px;">
 
-<!-- ////////////////// jQuery Event 처리로 변경됨 /////////////////////////
-<form name="detailForm" action="/listUser.do" method="post">
-////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <form name="detailForm">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
@@ -110,9 +195,6 @@
 				<tr>
 					<td width="17" height="23"><img src="/images/ct_btnbg01.gif" width="17" height="23"></td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<!-- ////////////////// jQuery Event 처리로 변경됨 /////////////////////////
-							<a href="javascript:fncGetUserList('1');">검색</a>
-							////////////////////////////////////////////////////////////////////////////////////////////////// -->
 						검색
 					</td>
 					<td width="14" height="23"><img src="/images/ct_btnbg03.gif" width="14" height="23"></td>
@@ -122,7 +204,7 @@
 	</tr>
 </table>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
+<table id="list" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
 		<td colspan="11" >
 			전체  ${resultPage.totalCount } 건수, 현재 ${resultPage.currentPage}  페이지
@@ -131,9 +213,6 @@
 	<tr>
 		<td class="ct_list_b" width="100">No</td>
 		<td class="ct_line02"></td>
-		<!-- ////////////////// jQuery Event 처리로 변경됨 /////////////////////////
-		<td class="ct_list_b" width="150">회원ID</td>
-		////////////////////////////////////////////////////////////////////////////////////////////////// -->
 		<td class="ct_list_b" width="150">
 			회원ID<br>
 			<h7 >(id click:상세정보)</h7>
@@ -153,21 +232,20 @@
 		<tr class="ct_list_pop">
 			<td align="center">${ i }</td>
 			<td></td>
-			<td align="left">
-				<!-- ////////////////// jQuery Event 처리로 변경됨 /////////////////////////
-				<a href="/user/getUser?userId=${user.userId}">${user.userId}</a>
-				////////////////////////////////////////////////////////////////////////////////////////////////// -->
-				${user.userId}
-			</td>
+			<td align="left">${user.userId}</td>
 			<td></td>
 			<td align="left">${user.userName}</td>
 			<td></td>
 			<td align="left">${user.email}
-			</td>		
+			</td>
 		</tr>
 		<tr>
-		<td colspan="11" bgcolor="D6D7D6" height="1"></td>
+			<!-- //////////////////////////// 추가 , 변경된 부분 /////////////////////////////
+			<td colspan="11" bgcolor="D6D7D6" height="1"></td>
+			////////////////////////////////////////////////////////////////////////////////////////////  -->
+			<td id="${user.userId}" colspan="11" bgcolor="D6D7D6" height="1"></td>
 		</tr>
+
 	</c:forEach>
 </table>
 
@@ -178,7 +256,7 @@
 		<td align="center">
 		   <input type="hidden" id="currentPage" name="currentPage" value=""/>
 	
-			<jsp:include page="../common/pageNavigator.jsp"/>	
+			<%--<jsp:include page="../common/pageNavigator.jsp"/> --%>	
 			
     	</td>
 	</tr>

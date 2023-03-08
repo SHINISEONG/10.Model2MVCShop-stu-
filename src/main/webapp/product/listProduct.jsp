@@ -84,16 +84,22 @@
 						"Content-Type" : "application/json"
 					},
 					success : function (JSONData, status) {
-						availableTags = JSONData;
+						availableTags=JSONData;
 						$( "#searchKeyword" ).autocomplete({
 							   source: availableTags
 						});
 					}
 				}
-		);
+		);	
 		
 		$('.searchMinPrice').hide();
 		$('.searchMaxPrice').hide();
+		
+		if($('#searchCondition').val()=='2') {
+			$('.searchMinPrice').show();
+			$('.searchMaxPrice').show();
+			$('#searchKeyword').hide();
+		}
 		$('#searchCondition').on('change',function(){
 			if($('#searchCondition').val()!='2') {
 				$('.searchMinPrice').hide();
@@ -180,7 +186,7 @@
 						<img src="/images/ct_btnbg01.gif" width="17" height="23">
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<a href="javascript:fncGetProductList('1', '${param.menu }');">검색</a>
+						<a href="javascript:fncGetProductList('1', '${search.searchOrderType}','${param.menu }');">검색</a>
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23">

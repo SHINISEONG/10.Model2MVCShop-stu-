@@ -75,7 +75,10 @@ $(function () {
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td width="105">
-					${purchase.purchaseProd.fileName}</td>
+					<c:forEach var="imgfileName" items="${purchase.purchaseProd.fileNames}">
+						<img src="/images/uploadFiles/${imgfileName }" width="300" height="300" />
+					</c:forEach>
+					</td>
 					<td></td>
 				</tr>
 			</table>

@@ -40,7 +40,7 @@ public class UserController {
 	int pageUnit;
 	
 	//@Value("#{commonProperties['pageSize']}")
-	int pageSize=28;
+	int pageSize=18;
 	
 	
 	//@RequestMapping("/addUserView.do")
@@ -83,9 +83,11 @@ public class UserController {
 	public String updateUser( @RequestParam("userId") String userId , Model model ) throws Exception{
 
 		System.out.println("/user/updateUser : GET");
+		System.out.println("userId in updateUser"+userId);
 		//Business Logic
 		User user = userService.getUser(userId);
 		// Model °ú View ¿¬°á
+		System.out.println(user);
 		model.addAttribute("user", user);
 		
 		return "forward:/user/updateUser.jsp";
